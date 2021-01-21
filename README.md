@@ -833,7 +833,21 @@ giftCoupon의 구현체의 deployment.yaml 소스 서비스포트를 8080이 아
 
 ## 무정지 재배포
 
-무정지 재배포가 100% 되는지 확인하기 위해서 Autoscaler 설정을 제거하고, 배포작업 직전에 seige로 워크로드를 모니터링 함.
+무정지 재배포가 100% 되는지 확인하기 위해서 Autoscaler 설정을 제거하고, 
+```
+#삭제처리
+          readinessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 10
+
+```
+
+배포작업 직전에 seige로 워크로드를 모니터링 함.
 
 ```
 siege -c10 -t30S -r10 --content-type "application/json" 'http://match:8080/matches POST {"id": "101"}'
@@ -844,6 +858,18 @@ siege -c10 -t30S -r10 --content-type "application/json" 'http://match:8080/match
 ![image](https://user-images.githubusercontent.com/75401933/105041017-d7b50300-5aa5-11eb-90dd-5031cd846d81.png)
 
 1. 원인은 쿠버네티스가 새로 올려진 서비스를 READY 상태로 인식하여 서비스 유입을 진행한 것이기 때문에 이를 막기위해 Readiness Probe 를 설정함:
+```
+#재반영
+          readinessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 10
+```
+
 1. CI/CD를 통해 새로운 배포 시작
 1. 동일한 시나리오로 재배포 한 후 Availability 확인:
 ![image](https://user-images.githubusercontent.com/75401933/105041119-f4e9d180-5aa5-11eb-9afb-e7af9c06fcce.png)
