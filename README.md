@@ -76,8 +76,8 @@
 
 ```
 - 도메인 서열 분리
-    - Core Domain:  match, visit  : 핵심 서비스이며, 연간 Up-time SLA 수준을 99.999% 목표, 배포주기는 match의 경우 1주일 1회 미만, visit의 경우 1개월 1회 미만
-    - Supporting Domain:  visitReqLists , myPages : 경쟁력을 내기위한 서비스이며, SLA 수준은 연간 60% 이상 uptime 목표, 배포주기는 각 팀의 자율이나 표준 스프린트 주기가 1주일 이므로 1주일 1회 이상을 기준으로 함.
+    - Core Domain:  match, visit  : 핵심 서비스
+    - Supporting Domain:  visitReqLists , myPages : 경쟁력을 내기위한 서비스이며
     - General Domain:   payment(결제) : 결제서비스로 3rd Party 외부 서비스를 사용하는 것이 경쟁력이 높음
 ```
 
@@ -87,7 +87,7 @@
 
   - Chris Richardson, MSA Patterns 참고하여 Inbound adaptor와 Outbound adaptor를 구분함
   - 호출관계에서 PubSub 과 Req/Res 를 구분함
-  - 서브 도메인과 바운디드 컨텍스트의 분리:  각 팀의 KPI 별로 아래와 같이 관심 구현 스토리를 나눠가짐
+  - 서브 도메인과 바운디드 컨텍스트의 분리:
 
 
 # 구현:
@@ -114,7 +114,7 @@ mvn spring-boot:run
 
 ## DDD 의 적용
 
-- 각 서비스내에 도출된 핵심 Aggregate Root 객체를 Entity 로 선언하였다: (예시는 match 마이크로 서비스). 이때 가능한 현업에서 사용하는 언어 (유비쿼터스 랭귀지)를 그대로 사용하였고, 모든 구현에 있어서 영문으로 사용하여 별다른  오류없이 구현하였다.
+- 각 서비스내에 도출된 핵심 Aggregate Root 객체를 Entity 로 선언하였다: (예시는 match 마이크로 서비스)
 
 ```
 package matching;
@@ -711,7 +711,6 @@ http localhost:8081/matches id=51 price=50000 status=matchRequest
 # 운영
 
 ## CI/CD 설정
-각 구현체들은 각자의 source repository 에 구성되었고, 사용한 CI/CD 플랫폼은 Azure를 사용하였으며, pipeline build script 는 각 프로젝트 폴더 이하에 deployment.yml, service.yml 에 포함되었다
 
 ![CI](https://user-images.githubusercontent.com/75401910/105273289-51e8a300-5bde-11eb-92ec-606856311d10.PNG)
 
@@ -719,7 +718,7 @@ http localhost:8081/matches id=51 price=50000 status=matchRequest
 
 
 
-## 동기식 호출 / 서킷 브레이킹 / 장애격리 
+## 동기식 호출 / 서킷 브레이킹 / 장애격리 **
 
 
 서킷 브레이킹 프레임워크의 선택: Spring FeignClient + Hystrix 옵션을 사용하여 구현함
@@ -795,7 +794,7 @@ kubectl autoscale deploy giftcoupon --min=1 --max=6 --cpu-percent=10
 siege -c30 -t120S -v http://visit:8080/visits/600 
 ```
 
-부하에 따라 visit pod의 cpu 사용률이 증가했고, Pod Replica 수가 증가하는 것을 확인할 수 있었음
+부하에 따라 Pod Replica 수가 증가하는 것을 확인할 수 있었음
 
 ![파드늘어남](https://user-images.githubusercontent.com/75401910/105277870-a7757d80-5be7-11eb-8768-f0584610ecd3.PNG)
 
