@@ -376,6 +376,7 @@ public class PolicyHandler{
 ```
 
 
+
 ### 시간적 디커플링 / 장애격리 
 
 방문(visit) 시스템은 결제(payment) 시스템과 완전히 분리되어있으며 이벤트 수신에 따라 처리되기 때문에, 방문 시스템이 유지보수로 인해 잠시 내려간 상태라도 방문요청(match) 및 결제(payment)하는데에 문제가 없다
@@ -463,6 +464,15 @@ public class Visit {
     }
 
 ```
+
+- 방문 접수 처리 후 쿠폰 발행 확인
+
+![image](https://user-images.githubusercontent.com/75401910/105270157-a2f59880-5bd8-11eb-93a4-32f00873cd7d.PNG)
+
+- 매칭취소 처리 후 쿠폰 삭제 처리 확인
+
+![image](https://user-images.githubusercontent.com/75401910/105270141-9f621180-5bd8-11eb-883e-b5dec9ce3cb6.PNG)
+
 
 
 ### SAGA / Corelation
