@@ -819,17 +819,6 @@ payment 구현체에서 해당 pvc를 volumeMount 하여 사용 (kubectl get dep
 <img width="482" alt="03 mount_설정확인" src="https://user-images.githubusercontent.com/66051393/105042971-41361100-5aa8-11eb-8fa7-65efbe12fb8c.png">
 
 
-## Self_healing (liveness probe)
-giftCoupon의 구현체의 deployment.yaml 소스 서비스포트를 8080이 아닌 고의로 8081로 변경하여 재배포한 후 pod 상태 확인
-
-• 정상 서비스포트 확인
-
-<img width="557" alt="01 증적자료" src="https://user-images.githubusercontent.com/66051393/105043345-c4effd80-5aa8-11eb-83db-df351905d102.png">
-
-• 비정상 상태의 pod 정보 확인
-
-<img width="581" alt="03 증적자료_POD비정상으로재기동" src="https://user-images.githubusercontent.com/66051393/105043596-0ed8e380-5aa9-11eb-9c46-dabe5736df9c.png">
-
 
 ## 무정지 재배포
 
