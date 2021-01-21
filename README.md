@@ -659,6 +659,10 @@ spring:
           uri: http://localhost:8084
           predicates:
             - Path=/myPages/**,/myPages/**
+        - id: giftcoupon
+          uri: http://localhost:8085
+          predicates:
+            - Path=/giftCoupons/** 
       globalcors:
         corsConfigurations:
           '[/**]':
