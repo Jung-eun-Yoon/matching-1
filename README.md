@@ -850,7 +850,7 @@ giftCoupon의 구현체의 deployment.yaml 소스 서비스포트를 8080이 아
 배포작업 직전에 seige로 워크로드를 모니터링 함.
 
 ```
-siege -c10 -t30S -r10 --content-type "application/json" 'http://match:8080/matches POST {"id": "101"}'
+siege -c10 -t30S -r10 --content-type "application/json" 'http://match:8080/matches POST {"id": "101","price": "5000","status": "matchRequest"}'
 
 ```
 1. CI/CD를 통해 배포
