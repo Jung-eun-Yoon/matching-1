@@ -771,7 +771,8 @@ hystrix:
 ```
  - siege -c100 -t60S -r5 -v --content-type "application/json" 'http://match:8080/matches POST {"id": 101, "price":1000, "status": "matchRequest"}' 
 ```
-<img width="635" alt="03 화면증적" src="https://user-images.githubusercontent.com/66051393/105108628-ffd05080-5afd-11eb-826d-66a7b252c09a.png">
+![오류안남](https://user-images.githubusercontent.com/75401910/105274052-c3752100-5bdf-11eb-85e6-b865b5a10800.PNG)
+
 
 서킷브레이크가 발생하지 않아 아래와 같이 여러 조건으로 부하테스트를 진행하였으나, 500 에러를 발견할 수 없었음
 
@@ -809,12 +810,12 @@ visit 컨테이너를 마이크로서비스로 배포하면서 영속성 있는 
 
 kubectl describe pvc azure-pvc
 
-<img width="546" alt="01-1 화면증적(decribe)" src="https://user-images.githubusercontent.com/66051393/105042326-73933e80-5aa7-11eb-8c4f-94b46c811e56.png">
+![pvc설정확인](https://user-images.githubusercontent.com/75401910/105270153-a25d0200-5bd8-11eb-97ae-51d18d3a4689.PNG)
 
 • PVC Volume설정 확인
-mypage 구현체에서 해당 pvc를 volumeMount 하여 사용 (kubectl get deployment mypage -o yaml)
+payment 구현체에서 해당 pvc를 volumeMount 하여 사용 (kubectl get deployment payment -o yaml)
 
-<img width="583" alt="02 화면증적" src="https://user-images.githubusercontent.com/66051393/105042760-f87e5800-5aa7-11eb-9447-2ecb7d427623.png">
+![pvc볼륨설정확인](https://user-images.githubusercontent.com/75401910/105270149-a1c46b80-5bd8-11eb-8640-fb21e5a9f1f0.PNG)
 
 • mypage pod에 접속하여 mount 용량 확인
 
