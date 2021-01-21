@@ -713,11 +713,9 @@ http localhost:8081/matches id=51 price=50000 status=matchRequest
 ## CI/CD 설정
 각 구현체들은 각자의 source repository 에 구성되었고, 사용한 CI/CD 플랫폼은 Azure를 사용하였으며, pipeline build script 는 각 프로젝트 폴더 이하에 deployment.yml, service.yml 에 포함되었다
 
-<img width="678" alt="01 CI설정" src="https://user-images.githubusercontent.com/66051393/105039224-a4717480-5aa3-11eb-9d28-99fa5a809750.png">
+![CI](https://user-images.githubusercontent.com/75401910/105273289-51e8a300-5bde-11eb-92ec-606856311d10.PNG)
 
-<img width="886" alt="02 CD설정" src="https://user-images.githubusercontent.com/66051393/105039282-b521ea80-5aa3-11eb-94c3-1ec50475300d.png">
-
-<img width="647" alt="03 CD설정_상세" src="https://user-images.githubusercontent.com/66051393/105039330-c5d26080-5aa3-11eb-8b05-cabb28c6eaf1.png">
+![cd](https://user-images.githubusercontent.com/75401910/105273288-50b77600-5bde-11eb-94c5-2cf6a3a305d6.PNG)
 
 
 
