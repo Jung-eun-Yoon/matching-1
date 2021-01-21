@@ -65,14 +65,14 @@
 
 
 ## Event Storming 결과
-* MSAEz 로 모델링한 이벤트스토밍 결과:  http://www.msaez.io/#/storming/xEZmSDJKirOi8JxZbHu3ZOJMmQY2/every/701ca815b3e6ac4e15668ef609e86f43
+* MSAEz 로 모델링한 이벤트스토밍 결과: http://www.msaez.io/#/storming/InVw3F6kVRSzH0ReTXJvTcjHyE73/mine/8911d6df270b0882a6b026ca4f66ec9e
 
 ## 이벤트 도출
 ### 1차 이벤트스토밍 결과
 ![image](https://user-images.githubusercontent.com/75401933/100964027-11b85d00-356b-11eb-97b0-abd00e78c2c6.png)
 
 ### 최종 이벤트스토밍 결과
-![image](https://user-images.githubusercontent.com/75401933/105022842-8e58b980-5a8d-11eb-868c-aae24f8db3ed.png)
+![image](https://user-images.githubusercontent.com/75401910/105270146-a12bd500-5bd8-11eb-9add-056719ce9009.PNG)
 
 ```
 - 도메인 서열 분리
@@ -83,7 +83,7 @@
 
 ## 헥사고날 아키텍처 다이어그램 도출
     
-![image](https://user-images.githubusercontent.com/45473909/105029093-3c1b9680-5a95-11eb-812d-b4b634e5fcec.png)
+![image](https://user-images.githubusercontent.com/75401910/105270144-a0933e80-5bd8-11eb-8da9-35df22be5853.png)
 
   - Chris Richardson, MSA Patterns 참고하여 Inbound adaptor와 Outbound adaptor를 구분함
   - 호출관계에서 PubSub 과 Req/Res 를 구분함
@@ -92,7 +92,7 @@
 
 # 구현:
 
-분석/설계 단계에서 도출된 헥사고날 아키텍처에 따라, 각 BC별로 대변되는 마이크로 서비스들을 스프링부트로 구현하였다. 구현한 각 서비스를 로컬에서 실행하는 방법은 아래와 같다 (각자의 포트넘버는 8081 ~ 8084 이다)
+분석/설계 단계에서 도출된 헥사고날 아키텍처에 따라, 각 BC별로 대변되는 마이크로 서비스들을 스프링부트로 구현하였다. 구현한 각 서비스를 로컬에서 실행하는 방법은 아래와 같다 (각자의 포트넘버는 8081 ~ 8085 이다)
 
 ```
 cd match
@@ -106,6 +106,9 @@ mvn spring-boot:run
 
 cd mypage
 mvn spring-boot:run  
+
+cd giftcoupon
+mvn spring-boot:run 
 ```
 
 
@@ -288,6 +291,8 @@ http localhost:8088/matches id=5006 price=50000 status=matchRequest  #Success
 ```
 ![11 payment올리면match됨](https://user-images.githubusercontent.com/45473909/105013494-a8d96580-5a82-11eb-95de-73a47f072920.PNG)
 
+
+
 - 또한 과도한 요청시에 서비스 장애가 도미노 처럼 벌어질 수 있다. (서킷브레이커, 폴백 처리는 운영단계에서 설명한다.)
 
 
@@ -402,6 +407,62 @@ http POST http://localhost:8082/visits matchId=101 teacher=Smith visitDate=20210
 http localhost:8082/visits     
 ```
 ![image](https://user-images.githubusercontent.com/75401933/105036115-65412480-5a9f-11eb-8cf8-ea4e46376a46.png)
+
+
+### 신규 서비스 추가 
+
+방문접수가 완료 되면 쿠폰이 발행되는 서비스를 추가 하였다. 비동기식으로 처리하며, 쿠폰시스템의 처리를 위하여 방문접수가 블로킹 되지 않도록 처리한다.
+ 
+- 이를 위하여 방문요청이력에 기록을 남긴 후에 곧바로 방문요청이 완료 되었다는 도메인 이벤트를 카프카로 송출한다(Publish)
+ 
+```
+package matching;
+
+import javax.persistence.*;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+@Entity
+@Table(name="Visit_table")
+public class Visit {
+   // @Autowired
+    //VisitReqListRepository VisitReqListRepository;
+
+    @Id
+    private Long matchId;
+    private String teacher;
+    private String visitDate;
+
+    @PostPersist
+    public void onPostPersist(){
+        VisitAssigned visitAssigned = new VisitAssigned();
+        BeanUtils.copyProperties(this, visitAssigned);
+        visitAssigned.publishAfterCommit();
+
+
+```
+
+- 쿠폰 서비스에서는 방문접수완료 이벤트를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다:
+
+```
+    @StreamListener(KafkaProcessor.INPUT)
+    public void wheneverVisitAssigned_(@Payload VisitAssigned visitAssigned) {
+
+        if(visitAssigned.isMe()){
+            System.out.println("##### listener wheneverVisitAssigned  : " + visitAssigned.toJson());
+
+            GiftCouponRepository.findById(visitAssigned.getMatchId()).ifPresent(GiftCoupon ->{
+                GiftCoupon.setMatchId(visitAssigned.getMatchId());
+                GiftCoupon.setCouponStatus("Published");
+                GiftCouponRepository.save(GiftCoupon);
+            });
+
+        }
+    }
+
+```
 
 
 ### SAGA / Corelation
