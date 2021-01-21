@@ -747,8 +747,6 @@ hystrix:
         PaymentApproved paymentApproved = new PaymentApproved();
         BeanUtils.copyProperties(this, paymentApproved);
 
-        //바로 이벤트를 보내버리면 주문정보가 커밋되기도 전에 배송발송됨 이벤트가 발송되어 주문테이블의 상태가 바뀌지 않을 수 있다.
-        // TX 리스너는 커밋이 완료된 후에 이벤트를 발생하도록 만들어준다.
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
             @Override
             public void beforeCommit(boolean readOnly) {
@@ -789,8 +787,9 @@ giftcoupon에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한�
 
 
 ```
-kubectl autoscale deploy visit --min=1 --max=6 --cpu-percent=10 
+kubectl autoscale deploy giftcoupon --min=1 --max=6 --cpu-percent=10 
 ```
+![hpa](https://user-images.githubusercontent.com/75401910/105278647-4babf400-5be9-11eb-83df-f5c19eba0339.PNG)
 
 ```
 siege -c30 -t120S -v http://visit:8080/visits/600 
