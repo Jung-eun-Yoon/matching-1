@@ -804,7 +804,7 @@ siege -c20 -t120S -v http://visit:8080/visits/600
 
 ## Persistence Volume
 
-visit 컨테이너를 마이크로서비스로 배포하면서 영속성 있는 저장장치(Persistent Volume)를 적용함
+payment 컨테이너를 마이크로서비스로 배포하면서 영속성 있는 저장장치(Persistent Volume)를 적용함
 
 • PVC 설정 확인
 
@@ -817,13 +817,13 @@ payment 구현체에서 해당 pvc를 volumeMount 하여 사용 (kubectl get dep
 
 ![pvc볼륨설정확인](https://user-images.githubusercontent.com/75401910/105270149-a1c46b80-5bd8-11eb-8640-fb21e5a9f1f0.PNG)
 
-• mypage pod에 접속하여 mount 용량 확인
+• payment pod에 접속하여 mount 용량 확인
 
 <img width="482" alt="03 mount_설정확인" src="https://user-images.githubusercontent.com/66051393/105042971-41361100-5aa8-11eb-8fa7-65efbe12fb8c.png">
 
 
 ## Self_healing (liveness probe)
-mypage구현체의 deployment.yaml 소스 서비스포트를 8080이 아닌 고의로 8081로 변경하여 재배포한 후 pod 상태 확인
+giftCoupon의 구현체의 deployment.yaml 소스 서비스포트를 8080이 아닌 고의로 8081로 변경하여 재배포한 후 pod 상태 확인
 
 • 정상 서비스포트 확인
 
