@@ -785,21 +785,20 @@ hystrix:
 
 ## 오토스케일 아웃
 
-앞서 CB 는 시스템을 안정되게 운영할 수 있게 해줬지만 사용자의 요청을 100% 받아들여주지 못했기 때문에 이에 대한 보완책으로 자동화된 확장 기능을 적용하고자 한다.
-
-visit 구현체에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한다. 설정은 CPU 사용량이 10프로를 넘어서면 replica 를 10개까지 늘려준다:
-
-kubectl autoscale deploy visit --min=1 --max=10 --cpu-percent=15
-
-<img width="504" alt="01 화면증적" src="https://user-images.githubusercontent.com/66051393/105040263-f8308d80-5aa4-11eb-9686-0afedeaa5a48.png">
+giftcoupon에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한다. 설정은 CPU 사용량이 10프로를 넘어서면 replica 를 6개까지 늘려준다:
 
 
-kubectl exec -it pod siege -- /bin/bash
-siege -c20 -t120S -v http://visit:8080/visits/600
+```
+kubectl autoscale deploy visit --min=1 --max=6 --cpu-percent=10 
+```
+
+```
+siege -c30 -t120S -v http://visit:8080/visits/600 
+```
 
 부하에 따라 visit pod의 cpu 사용률이 증가했고, Pod Replica 수가 증가하는 것을 확인할 수 있었음
 
-<img width="536" alt="02 화면증적" src="https://user-images.githubusercontent.com/66051393/105040477-3cbc2900-5aa5-11eb-94b8-7f2eb33102fa.png">
+![파드늘어남](https://user-images.githubusercontent.com/75401910/105277870-a7757d80-5be7-11eb-8768-f0584610ecd3.PNG)
 
 
 ## Persistence Volume
